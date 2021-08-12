@@ -5,9 +5,13 @@ import styles from "../styles/Home.module.css";
 const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const lower = "abcdefghijklmnopqrstuvwxyz";
 
+const norm = (letter: string) =>
+  letter.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
 export default function Home() {
   const [text, setText] = React.useState<string>("");
   const [shift, setShift] = React.useState<number>(3);
+  const [result, setResult] = React.useState("");
 
   function caesarCipher(text: string, shift: number): string {
     let newText = "";
@@ -34,6 +38,29 @@ export default function Home() {
     return newText;
   }
 
+  React.useEffect(() => {
+    if (!text) return;
+    setResult(caesarCipher(text, shift));
+  }, [text, shift]);
+
+  function getFrequency(letter: string) {
+    let re = new RegExp(letter, "gi");
+    return (result.match(re) || []).length;
+    // let freq = 0;
+    // let noSpace = result.replace(/ /g, "");
+
+    // if (!result) return;
+
+    // for (let i = 0; i < noSpace.length; i++) {
+    //   let resultLetter = noSpace[i];
+
+    //   const n = (result.match(re) || []).length;
+    //   freq += n;
+    // }
+
+    // return freq;
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -42,22 +69,32 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <textarea
-          value={text}
-          placeholder="digite o texto para ser encriptado"
-          onChange={(event) => setText(event.target.value)}
-        />
-        <p>
-          {String(shift).padStart(2, "0")}
-          <input
-            type="range"
-            min="1"
-            max="26"
-            value={shift}
-            onChange={(e) => setShift(+e.target.value)}
+        <div className={styles.forms}>
+          <textarea
+            value={text}
+            placeholder="digite o texto para ser encriptado"
+            onChange={(event) => setText(norm(event.target.value))}
           />
-        </p>
-        <div>{caesarCipher(text, shift)}</div>
+          <p>
+            {String(shift).padStart(2, "0")}
+            <input
+              type="range"
+              min="1"
+              max="26"
+              value={shift}
+              onChange={(e) => setShift(+e.target.value)}
+            />
+          </p>
+        </div>
+        <div className={styles.result}>{result}</div>
+        <div className={styles.frequencias}>
+          {upper.split("").map((l) => (
+            <div className={styles.frequenciasLetra} key={l}>
+              <div style={{ height: `${getFrequency(l) * 10}px` }}></div>
+              <span>{l}</span>
+            </div>
+          ))}
+        </div>
       </main>
     </div>
   );
