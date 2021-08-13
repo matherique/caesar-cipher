@@ -46,19 +46,6 @@ export default function Home() {
   function getFrequency(letter: string) {
     let re = new RegExp(letter, "gi");
     return (result.match(re) || []).length;
-    // let freq = 0;
-    // let noSpace = result.replace(/ /g, "");
-
-    // if (!result) return;
-
-    // for (let i = 0; i < noSpace.length; i++) {
-    //   let resultLetter = noSpace[i];
-
-    //   const n = (result.match(re) || []).length;
-    //   freq += n;
-    // }
-
-    // return freq;
   }
 
   return (
