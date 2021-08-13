@@ -1,9 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-
-const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const lower = "abcdefghijklmnopqrstuvwxyz";
+import { caesar, frenquency_analysis, Freq } from "../lib/caesar";
 
 const norm = (letter: string) =>
   letter.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -12,41 +10,14 @@ export default function Home() {
   const [text, setText] = React.useState<string>("");
   const [shift, setShift] = React.useState<number>(3);
   const [result, setResult] = React.useState("");
-
-  function caesarCipher(text: string, shift: number): string {
-    let newText = "";
-    for (let i = 0; i < text.length; i++) {
-      const letter = text[i];
-
-      if (!(upper + lower).includes(letter)) {
-        newText += letter === "\n" ? "\n" : letter;
-        continue;
-      }
-
-      let alphabet = lower;
-
-      if (upper.includes(letter)) {
-        alphabet = upper;
-      }
-
-      const current_position = alphabet.search(letter);
-      let position = (current_position + shift) % 26;
-
-      newText += alphabet.charAt(position);
-    }
-
-    return newText;
-  }
+  const [freq, setFreq] = React.useState<Freq>({});
 
   React.useEffect(() => {
     if (!text) return;
-    setResult(caesarCipher(text, shift));
+    const cipher = caesar(text, shift);
+    setResult(cipher);
+    setFreq(frenquency_analysis(cipher));
   }, [text, shift]);
-
-  function getFrequency(letter: string) {
-    let re = new RegExp(letter, "gi");
-    return (result.match(re) || []).length;
-  }
 
   return (
     <div className={styles.container}>
@@ -75,10 +46,11 @@ export default function Home() {
         </div>
         <div className={styles.result}>{result}</div>
         <div className={styles.frequencias}>
-          {upper.split("").map((l) => (
-            <div className={styles.frequenciasLetra} key={l}>
-              <div style={{ height: `${getFrequency(l) * 10}px` }}></div>
-              <span>{l}</span>
+          {Object.keys(freq).map((k) => (
+            <div className={styles.frequenciasLetra} key={k}>
+              <div style={{ height: `${freq[k] * 10}px` }}></div>
+              <span>{k}</span>
+              <small>{freq[k]}</small>
             </div>
           ))}
         </div>
