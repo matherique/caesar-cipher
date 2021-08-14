@@ -6,8 +6,11 @@ export function caesar(text: string, shift: number): string {
   for (let i = 0; i < text.length; i++) {
     const letter = text[i];
 
-    if (!(upper + lower).includes(letter)) {
-      newText += letter === "\n" ? "\n" : letter;
+    const re = new RegExp(letter, "gi");
+    const match = upper.match(re) || [];
+
+    if (match.length === 0) {
+      newText += letter;
       continue;
     }
 
@@ -31,11 +34,12 @@ export type Freq = { [key: string]: number };
 export function frenquency_analysis(text: string): Freq {
   const letters = upper.split("");
   const resp: Freq = {};
+
   for (let i = 0; i < letters.length; i++) {
     const re = new RegExp(letters[i], "gi");
-    const f = text.match(re)?.length || 0;
+    const match = text.match(re) || [];
 
-    resp[letters[i]] = f;
+    resp[letters[i]] = match.length;
   }
 
   return resp;
