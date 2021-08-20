@@ -13,7 +13,6 @@ export default function Home() {
   const [freq, setFreq] = React.useState<Freq>({});
 
   React.useEffect(() => {
-    if (!text) return;
     const cipher = caesar(text, shift);
     setResult(cipher);
     setFreq(frenquency_analysis(cipher));
@@ -31,7 +30,9 @@ export default function Home() {
           <textarea
             value={text}
             placeholder="digite o texto para ser encriptado"
-            onChange={(event) => setText(norm(event.target.value))}
+            onChange={(event) =>
+              setText(norm(event.target.value.toUpperCase()))
+            }
           />
           <p>
             {String(shift).padStart(2, "0")}

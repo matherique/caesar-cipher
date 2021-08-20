@@ -1,23 +1,17 @@
-export const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-export const lower = "abcdefghijklmnopqrstuvwxyz";
+export const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 export function caesar(text: string, shift: number): string {
   let newText = "";
+
   for (let i = 0; i < text.length; i++) {
     const letter = text[i];
 
     const re = new RegExp(letter, "gi");
-    const match = upper.match(re) || [];
+    const match = alphabet.match(re) || [];
 
     if (match.length === 0) {
       newText += letter;
       continue;
-    }
-
-    let alphabet = lower;
-
-    if (upper.includes(letter)) {
-      alphabet = upper;
     }
 
     const current_position = alphabet.indexOf(letter);
@@ -32,7 +26,7 @@ export function caesar(text: string, shift: number): string {
 export type Freq = { [key: string]: number };
 
 export function frenquency_analysis(text: string): Freq {
-  const letters = upper.split("");
+  const letters = alphabet.split("");
   const resp: Freq = {};
 
   for (let i = 0; i < letters.length; i++) {
